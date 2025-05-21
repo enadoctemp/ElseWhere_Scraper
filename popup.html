@@ -1,1 +1,27 @@
-<html><body><input id='query'><button id='startBtn'>Go</button><div id='output'></div><script src='popup.js'></script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Elsewhere Scraper</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 10px;
+    }
+    input, button {
+      margin: 5px;
+      padding: 5px;
+    }
+    #output {
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h3>Search & Scrape</h3>
+  <input id="query" placeholder="Enter query" size="40" />
+  <button id="startBtn">Scrape</button>
+  <div id="output"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
