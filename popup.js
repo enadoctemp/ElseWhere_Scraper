@@ -1,0 +1,1 @@
+document.getElementById('startBtn').addEventListener('click',()=>{const q=document.getElementById('query').value;document.getElementById('output').textContent='...';chrome.runtime.sendMessage({type:'scrape',query:q},r=>{document.getElementById('output').textContent=r?.summary||'Done';});});
