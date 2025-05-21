@@ -1,4 +1,4 @@
-name: CI - Lint, Test, and Package Extension
+name: CI - Full automated build and test
 
 on:
   push:
@@ -7,17 +7,17 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  build-test-package:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: 16
 
       - name: Install dependencies
         run: npm ci
@@ -28,16 +28,14 @@ jobs:
       - name: Run web-ext lint
         run: npx web-ext lint
 
-      # Optionally run web-ext tests (runs Firefox with your extension)
-      # Requires more config & Firefox setup; can be skipped for basic CI
-      # - name: Run web-ext tests
-      #   run: npx web-ext run --firefox-profile default
+      - name: Run unit tests (Jest)
+        run: npm test
 
       - name: Package extension
-        run: zip -r elsewhere-scraper.zip . -x '*.git*' '*.github*' 'node_modules/*'
+        run: zip -r elsewhere-scraper.zip . -x '*.git*' '*.github*' 'node_modules/*' 'tests/*'
 
-      - name: Upload packaged extension
-        uses: actions/upload-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: elsewhere-scraper-package
           path: elsewhere-scraper.zip
