@@ -68,7 +68,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const urls = [
       `https://www.google.com/search?q=${q}`,
       `https://www.bing.com/search?q=${q}`,
-      `https://duckduckgo.com/?q=${q}`
+      `https://duckduckgo.com/?q=${q}`,
+      `https://onion.live/search?q=${q}`,
+      `https://ahmia.fi/search/?q=${q}`
     ];
 
     urls.forEach((url, index) => {
