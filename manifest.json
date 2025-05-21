@@ -1,3 +1,6 @@
+/* =============================
+   manifest.json
+============================= */
 {
   "manifest_version": 3,
   "name": "Elsewhere Scraper",
@@ -22,3 +25,65 @@
     "128": "fox.png"
   }
 }
+
+/* =============================
+   popup.html
+============================= */
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Elsewhere Scraper</title>
+  <style>
+    body { font-family: sans-serif; margin: 10px; }
+    input, button { margin: 5px; }
+  </style>
+</head>
+<body>
+  <h3>Search & Scrape</h3>
+  <input id="query" placeholder="Enter query" size="40" />
+  <button id="startBtn">Scrape</button>
+  <div id="output"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
+
+/* =============================
+   popup.js
+============================= */
+document.getElementById('startBtn').addEventListener('click', () => {
+  const query = document.getElementById('query').value;
+  document.getElementById('output').textContent = 'Scraping...';
+
+  chrome.runtime.sendMessage({ type: 'scrape', query }, response => {
+    document.getElementById('output').textContent = response?.summary || 'Scrape complete.';
+  });
+});
+
+/* =============================
+   background.js
+============================= */
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'scrape') {
+    const q = encodeURIComponent(request.query);
+    const urls = [
+      `https://www.google.com/search?q=${q}`,
+      `https://www.bing.com/search?q=${q}`,
+      `https://duckduckgo.com/?q=${q}`
+    ];
+
+    urls.forEach((url, index) => {
+      chrome.tabs.create({ url, active: false }, tab => {
+        setTimeout(() => {
+          chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: () => {
+              chrome.runtime.sendMessage({ type: 'data', content: document.body.innerText });
+            }
+          });
+        }, 5000 * (index + 1));
+      });
+    });
+
+    sendResponse({ summary: 'Scraping in progress. Check console for updates.' });
+  }
+});
