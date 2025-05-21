@@ -1,13 +1,24 @@
-# Elsewhere Scraper (User Testing)
+# Elsewhere Scraper
 
-Test build of the intelligent web scraper extension.
+A cross-layer, intelligent browser extension that extracts data from surface and deep web sources.
 
-## Features:
-- Scrape from search engines and Tor gateways
-- Runs in background tabs
-- Intelligent query expansion
+## Features
+- Multi-engine search scraping
+- Background tab scraping with NLP hooks
+- .onion gateway support (Ahmia, Onion.live)
+- No user tracking, privacy-aware
+- Auto-handles multiple tabs
 
-### Privacy:
-No tracking. No automatic uploads. Local-only unless explicitly shared.
+## Usage
+1. Load as unpacked extension in Chrome:
+   - Go to chrome://extensions
+   - Enable Developer Mode
+   - Click \"Load Unpacked\" and select the folder
 
-**Please report issues via GitHub Issues tab.**
+2. Type your search and click **Scrape**.
+
+## Privacy
+No user data is sent anywhere. All scraping occurs locally within the browser.
+
+## Reporting Issues
+Submit bugs and suggestions to the GitHub issues tab.
