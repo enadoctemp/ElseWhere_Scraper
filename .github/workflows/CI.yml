@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch:   # <-- Manual trigger added here
+  workflow_dispatch:   # Manual trigger
 
 jobs:
   build-test-package:
@@ -36,7 +36,7 @@ jobs:
         run: zip -r elsewhere-scraper.zip . -x '*.git*' '*.github*' 'node_modules/*' 'tests/*'
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3
         with:
           name: elsewhere-scraper-package
           path: elsewhere-scraper.zip
