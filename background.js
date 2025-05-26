@@ -1,4 +1,10 @@
-// Improved: Added error handling for tab creation and script execution
+// Store ongoing scraping sessions by queryId
+const scrapingSessions = {};
+
+// Helper: generate unique IDs
+function generateId() {
+  return Math.random().toString(36).substring(2, 10);
+}
 
 // Listen for messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
