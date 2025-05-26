@@ -18,10 +18,11 @@
   </style>
 </head>
 <body>
-  <h3>Search & Scrape</h3>
-  <input id="query" placeholder="Enter query" size="40" />
-  <button id="startBtn">Scrape</button>
-  <div id="output"></div>
+  <h3 id="main-heading">Search & Scrape</h3>
+  <label for="query">Enter query:</label>
+  <input id="query" aria-labelledby="main-heading" placeholder="Enter query" size="40" />
+  <button id="startBtn" aria-label="Start Scraping">Scrape</button>
+  <div id="output" role="status"></div>
   <script src="popup.js"></script>
 </body>
 </html>
