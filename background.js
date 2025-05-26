@@ -1,10 +1,4 @@
-// Store ongoing scraping sessions by queryId
-const scrapingSessions = {};
-
-// Helper: generate unique IDs
-function generateId() {
-  return Math.random().toString(36).substring(2, 10);
-}
+// Improved: Added error handling for tab creation and script execution
 
 // Listen for messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -36,15 +30,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     urls.forEach((url, index) => {
       chrome.tabs.create({ url, active: false }, tab => {
+        if (chrome.runtime.lastError) {
+          console.error('Failed to create tab:', chrome.runtime.lastError.message);
+          return;
+        }
         setTimeout(() => {
           chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: (qid) => {
-              // Extract text content
               const text = document.body.innerText || '';
               chrome.runtime.sendMessage({ type: 'data', content: text, queryId: qid });
             },
             args: [queryId]
+          }, () => {
+            if (chrome.runtime.lastError) {
+              console.error('Failed to execute script:', chrome.runtime.lastError.message);
+            }
           });
         }, 5000 * (index + 1)); // stagger scraping
       });
@@ -60,24 +61,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return;
     }
 
-    // Save content to session results
     scrapingSessions[queryId].results.push(content);
     scrapingSessions[queryId].completedCount++;
 
-    // When all tabs finished scraping
     if (scrapingSessions[queryId].completedCount === scrapingSessions[queryId].expectedCount) {
-      // Merge results (simple concatenation, can be improved)
       const mergedData = scrapingSessions[queryId].results.join('\n\n---\n\n');
-
-      // Save merged results to local storage
       chrome.storage.local.set({ [`scrapeResult_${queryId}`]: mergedData }, () => {
         console.log(`Scrape results for queryId ${queryId} saved.`);
-
-        // Optionally notify UI or other parts
         chrome.runtime.sendMessage({ type: 'scrapeComplete', queryId, dataLength: mergedData.length });
-
-        // Cleanup session data if desired
-        // delete scrapingSessions[queryId];
       });
     }
   }
@@ -88,7 +79,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const data = result[`scrapeResult_${queryId}`] || '';
       sendResponse({ data });
     });
-    // Return true to keep sendResponse async
     return true;
   }
 });
